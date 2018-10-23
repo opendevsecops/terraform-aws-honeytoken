@@ -11,5 +11,12 @@ variable "path" {
 variable "tokens" {
   description = "Number of tokens to generate."
 
-  default = 0
+  default = 1
+}
+
+# depends_on workaround
+
+variable "depends_on" {
+  type    = "list"
+  default = []
 }

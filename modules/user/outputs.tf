@@ -1,5 +1,5 @@
-output "user" {
-  value = "${var.user}"
+output "name" {
+  value = "${var.name}"
 }
 
 output "path" {
