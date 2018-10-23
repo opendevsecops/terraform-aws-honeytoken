@@ -5,7 +5,7 @@ variable "user_name" {
 variable "user_path" {
   description = "Path in which to create the user."
 
-  default = "/user/"
+  default = "/"
 }
 
 variable "trail_name" {
@@ -34,4 +34,9 @@ variable "lambda_role_name" {
   description = "A unique name for your Lambda Function."
 
   default = "honeytoken_cloudtrail_handler_role"
+}
+
+variable "slack_notification_url" {
+  description = "URL for slack notifications."
+  default     = ""
 }

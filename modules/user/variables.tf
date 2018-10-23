@@ -5,7 +5,7 @@ variable "name" {
 variable "path" {
   description = "Path in which to create the user."
 
-  default = "/user/"
+  default = "/"
 }
 
 variable "tokens" {

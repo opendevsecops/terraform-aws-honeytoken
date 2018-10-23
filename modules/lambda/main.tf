@@ -23,6 +23,13 @@ resource "aws_lambda_function" "main" {
   source_code_hash = "${data.archive_file.main.output_base64sha256}"
   role             = "${aws_iam_role.main.arn}"
   timeout          = "${local.timeout}"
+
+  environment {
+    variables = {
+      HONEYUSERNAME          = "${var.honey_user_name}"
+      SLACK_NOTIFICATION_URL = "${var.slack_notification_url}"
+    }
+  }
 }
 
 resource "aws_iam_role" "main" {
@@ -44,7 +51,7 @@ resource "aws_iam_role" "main" {
 EOF
 }
 
-resource "aws_iam_role_policy" "logs" {
+resource "aws_iam_role_policy" "main_policy" {
   name = "logs"
   role = "${aws_iam_role.main.name}"
 
@@ -54,7 +61,9 @@ resource "aws_iam_role_policy" "logs" {
     "Statement": [
         {
             "Effect": "Allow",
-            "Action": "logs:CreateLogGroup",
+            "Action": [
+				"logs:CreateLogGroup"
+			],
             "Resource": "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:*"
         },
         {
@@ -63,16 +72,21 @@ resource "aws_iam_role_policy" "logs" {
                 "logs:CreateLogStream",
                 "logs:PutLogEvents"
             ],
-            "Resource": [
-                "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/*"
-            ]
-        }
+            "Resource": "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/*"
+        },
+		{
+            "Effect": "Allow",
+            "Action": [
+				"s3:GetObject"
+			],
+            "Resource": "arn:aws:s3:::${var.bucket_name}${var.bucket_key_prefix == "" ?  "/" : "/${var.bucket_key_prefix}/"}*"
+		}
     ]
 }
 EOF
 }
 
-resource "aws_cloudwatch_log_group" "logs" {
+resource "aws_cloudwatch_log_group" "main" {
   name              = "/aws/lambda/${var.name}"
   retention_in_days = "${local.log_retention_period}"
 }

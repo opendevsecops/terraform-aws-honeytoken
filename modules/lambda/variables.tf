@@ -23,6 +23,15 @@ variable "bucket_key_prefix" {
   default     = ""
 }
 
+variable "honey_user_name" {
+  description = "The name of the honey user to monitor."
+}
+
+variable "slack_notification_url" {
+  description = "URL for slack notifications."
+  default     = ""
+}
+
 # depends_on workaround
 
 variable "depends_on" {
