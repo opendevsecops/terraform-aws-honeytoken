@@ -37,16 +37,16 @@ resource "aws_iam_role" "main" {
 
   assume_role_policy = <<EOF
 {
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Action": "sts:AssumeRole",
-            "Principal": {
-                "Service": "lambda.amazonaws.com"
-            },
-            "Effect": "Allow"
-        }
-    ]
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "lambda.amazonaws.com"
+      },
+      "Effect": "Allow"
+    }
+  ]
 }
 EOF
 }
@@ -57,31 +57,31 @@ resource "aws_iam_role_policy" "main_policy" {
 
   policy = <<EOF
 {
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-				"logs:CreateLogGroup"
-			],
-            "Resource": "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
-                "logs:CreateLogStream",
-                "logs:PutLogEvents"
-            ],
-            "Resource": "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/*"
-        },
-		{
-            "Effect": "Allow",
-            "Action": [
-				"s3:GetObject"
-			],
-            "Resource": "arn:aws:s3:::${var.bucket_name}${var.bucket_key_prefix == "" ?  "/" : "/${var.bucket_key_prefix}/"}*"
-		}
-    ]
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogGroup"
+      ],
+      "Resource": "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ],
+      "Resource": "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": "arn:aws:s3:::${var.bucket_name}${var.bucket_key_prefix == "" ?  "/" : "/${var.bucket_key_prefix}/"}*"
+    }
+  ]
 }
 EOF
 }

@@ -16,16 +16,16 @@ resource "aws_iam_role" "main" {
 
   assume_role_policy = <<EOF
 {
-	"Version": "2012-10-17",
-	"Statement": [
-		{
-			"Action": "sts:AssumeRole",
-			"Principal": {
-				"Service": "cloudtrail.amazonaws.com"
-			},
-			"Effect": "Allow"
-		}
-	]
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "cloudtrail.amazonaws.com"
+      },
+      "Effect": "Allow"
+    }
+  ]
 }
 EOF
 }
@@ -36,17 +36,17 @@ resource "aws_iam_role_policy" "main" {
 
   policy = <<EOF
 {
-	"Version": "2012-10-17",
-	"Statement": [
-		{
-			"Action": [
-				"logs:CreateLogStream",
-				"logs:PutLogEvents"
-			],
-			"Effect": "Allow",
-			"Resource": "${aws_cloudwatch_log_group.main.arn}"
-		}
-	]
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ],
+      "Effect": "Allow",
+      "Resource": "${aws_cloudwatch_log_group.main.arn}"
+    }
+  ]
 }
 EOF
 }
