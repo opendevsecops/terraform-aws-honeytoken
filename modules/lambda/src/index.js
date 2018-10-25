@@ -64,7 +64,7 @@ const post = async (uri, body) => {
 };
 
 const raiseAlert = async (record) => {
-    const { sourceIPAddress='unknown', userAgent='unknown' } = record
+    const { sourceIPAddress='unknown', userAgent='unknown' } = record;
 
 	console.log(process.env.NOTIFICATION_MESSAGE, record);
 
