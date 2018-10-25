@@ -63,7 +63,7 @@ const post = async (uri, body) => {
     });
 };
 
-const raiseAlert = async (record) => {
+const raiseAlert = async (record, meta) => {
     const { sourceIPAddress='unknown', userAgent='unknown' } = record;
 
     console.log(process.env.NOTIFICATION_MESSAGE, record);
@@ -71,8 +71,12 @@ const raiseAlert = async (record) => {
     const blocks = [];
 
     blocks.push(process.env.NOTIFICATION_MESSAGE);
-    blocks.push(`Source IP Address: ${sourceIPAddress}`)
-    blocks.push(`User Agent: ${userAgent}`)
+    blocks.push(`Source IP Address: ${sourceIPAddress}`);
+    blocks.push(`User Agent: ${userAgent}`);
+
+    Object.entries(meta || {}).forEach(([name, value]) => {
+        blocks.push(`${name}: ${value}`);
+    });
 
     const text = blocks.join('\n');
 
@@ -81,13 +85,13 @@ const raiseAlert = async (record) => {
     }
 };
 
-const detectThreat = async (record) => {
+const detectThreat = async (record, meta) => {
     const { userIdentity, requestParameters } = record || {};
     const { userName: u1='' } = userIdentity || {};
     const { userName: u2='' } = requestParameters || {};
 
     if ([u1, u2].includes(process.env.HONEYUSERNAME)) {
-        await raiseAlert(record);
+        await raiseAlert(record, meta);
     }
 };
 
@@ -109,8 +113,15 @@ exports.handler = async (event) => {
         const { name } = _bucket || {};
         const { key } = _object || {};
 
+        const meta = {
+            'S3 Bucket': name,
+            'S3 Key': key
+        };
+
         const records = await fetchRecords(name, key);
 
-        await Promise.all(records.map(detectThreat))
+        await Promise.all(records.map((record) => {
+            return detectThreat(record, meta);
+        }));
     }));
 };
