@@ -4,3 +4,7 @@
 # AWS Honey Token Terraform Module
 
 Terraform which create honey tokens and supporting infrastructure.
+
+## Getting Started
+
+The module is automatically published to the Terraform Module Registry. More information about the available inputs, outputs, dependencies and instructions how to use the module can be found at the official page [here](https://registry.terraform.io/modules/opendevsecops/honeytoken).
