@@ -66,7 +66,8 @@ const post = async (uri, body) => {
 const raiseAlert = async (record, meta) => {
     const { sourceIPAddress='unknown', userAgent='unknown' } = record;
 
-    console.log(process.env.NOTIFICATION_MESSAGE, record);
+    console.log(process.env.NOTIFICATION_MESSAGE);
+    console.log(record);
 
     const blocks = [];
 
@@ -79,6 +80,8 @@ const raiseAlert = async (record, meta) => {
     });
 
     const text = blocks.join('\n');
+
+    console.log(text);
 
     if (process.env.SLACK_NOTIFICATION_URL) {
         await post(process.env.SLACK_NOTIFICATION_URL, {text})
