@@ -64,13 +64,17 @@ const post = async (uri, body) => {
 };
 
 const raiseAlert = async (record) => {
-	console.log('Malicious activity detected', record)
+    const { sourceIPAddress='unknown', userAgent='unknown' } = record
 
-	const blocks = []
+	console.log(process.env.NOTIFICATION_MESSAGE, record);
 
-	blocks.push(`Malicious activity detected`)
+	const blocks = [];
 
-	const text = blocks.join('\n')
+	blocks.push(process.env.NOTIFICATION_MESSAGE);
+    blocks.push(`Source IP Address: ${sourceIPAddress}`)
+    blocks.push(`User Agent: ${userAgent}`)
+
+	const text = blocks.join('\n');
 
 	if (process.env.SLACK_NOTIFICATION_URL) {
 		await post(process.env.SLACK_NOTIFICATION_URL, {text})
@@ -78,10 +82,10 @@ const raiseAlert = async (record) => {
 };
 
 const detectThreat = async (record) => {
-	const { eventSource='', requestParameters } = record || {};
+	const { requestParameters } = record || {};
 	const { userName='' } = requestParameters || {};
 
-	if (eventSource === 'iam.amazonaws.com' && userName === process.env.HONEYUSERNAME) {
+	if (userName === process.env.HONEYUSERNAME) {
 		await raiseAlert(record);
 	}
 };

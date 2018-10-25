@@ -27,6 +27,11 @@ variable "honey_user_name" {
   description = "The name of the honey user to monitor."
 }
 
+variable "notification_message" {
+  description = "Notification message to send when threat identified"
+  default     = "Danger, Will Robinson!"
+}
+
 variable "slack_notification_url" {
   description = "URL for slack notifications."
   default     = ""

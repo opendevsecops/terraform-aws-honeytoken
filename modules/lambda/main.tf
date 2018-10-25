@@ -27,6 +27,7 @@ resource "aws_lambda_function" "main" {
   environment {
     variables = {
       HONEYUSERNAME          = "${var.honey_user_name}"
+      NOTIFICATION_MESSAGE   = "${var.notification_message}"
       SLACK_NOTIFICATION_URL = "${var.slack_notification_url}"
     }
   }
