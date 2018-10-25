@@ -66,50 +66,51 @@ const post = async (uri, body) => {
 const raiseAlert = async (record) => {
     const { sourceIPAddress='unknown', userAgent='unknown' } = record;
 
-	console.log(process.env.NOTIFICATION_MESSAGE, record);
+    console.log(process.env.NOTIFICATION_MESSAGE, record);
 
-	const blocks = [];
+    const blocks = [];
 
-	blocks.push(process.env.NOTIFICATION_MESSAGE);
+    blocks.push(process.env.NOTIFICATION_MESSAGE);
     blocks.push(`Source IP Address: ${sourceIPAddress}`)
     blocks.push(`User Agent: ${userAgent}`)
 
-	const text = blocks.join('\n');
+    const text = blocks.join('\n');
 
-	if (process.env.SLACK_NOTIFICATION_URL) {
-		await post(process.env.SLACK_NOTIFICATION_URL, {text})
-	}
+    if (process.env.SLACK_NOTIFICATION_URL) {
+        await post(process.env.SLACK_NOTIFICATION_URL, {text})
+    }
 };
 
 const detectThreat = async (record) => {
-	const { requestParameters } = record || {};
-	const { userName='' } = requestParameters || {};
+    const { userIdentity, requestParameters } = record || {};
+    const { userName: u1='' } = userIdentity || {};
+    const { userName: u2='' } = requestParameters || {};
 
-	if (userName === process.env.HONEYUSERNAME) {
-		await raiseAlert(record);
-	}
+    if ([u1, u2].includes(process.env.HONEYUSERNAME)) {
+        await raiseAlert(record);
+    }
 };
 
 const fetchRecords = async (Bucket, Key) => {
-	const { Body } = await s3.getObject({Bucket, Key}).promise();
+    const { Body } = await s3.getObject({Bucket, Key}).promise();
 
-	const data = zlib.gunzipSync(Body);
+    const data = zlib.gunzipSync(Body);
 
-	const { Records } = JSON.parse(data);
+    const { Records } = JSON.parse(data);
 
-	return Records || [];
+    return Records || [];
 };
 
 exports.handler = async (event) => {
-	const { Records } = event;
+    const { Records } = event;
 
-	await Promise.all((Records || []).map(async ({s3: _s3}) => {
-		const { bucket: _bucket, object: _object } = _s3 || {};
-		const { name } = _bucket || {};
-		const { key } = _object || {};
+    await Promise.all((Records || []).map(async ({s3: _s3}) => {
+        const { bucket: _bucket, object: _object } = _s3 || {};
+        const { name } = _bucket || {};
+        const { key } = _object || {};
 
-		const records = await fetchRecords(name, key);
+        const records = await fetchRecords(name, key);
 
-		await Promise.all(records.map(detectThreat))
-	}));
+        await Promise.all(records.map(detectThreat))
+    }));
 };
