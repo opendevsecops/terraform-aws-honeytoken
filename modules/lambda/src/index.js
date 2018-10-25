@@ -94,7 +94,7 @@ const detectThreat = async (record, meta) => {
     const { userName: u2='' } = requestParameters || {};
 
     if ([u1, u2].includes(process.env.HONEYUSERNAME)) {
-        await raiseAlert(record, meta);
+        await raiseAlert(record, {'User Name': process.env.HONEYUSERNAME, ...meta});
     }
 };
 
