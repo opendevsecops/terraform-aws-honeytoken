@@ -51,7 +51,7 @@ resource "aws_iam_role_policy" "main" {
 EOF
 }
 
-resource "aws_cloudtrail" "trail" {
+resource "aws_cloudtrail" "main" {
   name = "${var.name}"
 
   s3_bucket_name = "${var.bucket_name}"
