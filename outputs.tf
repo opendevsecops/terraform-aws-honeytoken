@@ -7,9 +7,11 @@ output "user_path" {
 }
 
 output "user_access_key_id" {
-  value = "${element(module.user.access_key_ids, 0)}"
+  value     = "${element(module.user.access_key_ids, 0)}"
+  sensitive = true
 }
 
 output "user_access_key_secret" {
-  value = "${element(module.user.access_key_secrets, 0)}"
+  value     = "${element(module.user.access_key_secrets, 0)}"
+  sensitive = true
 }

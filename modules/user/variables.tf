@@ -1,15 +1,15 @@
 variable "name" {
-  description = "The name for the user."
+  description = "The name for the user"
 }
 
 variable "path" {
-  description = "Path in which to create the user."
+  description = "Path in which to create the user"
 
   default = "/"
 }
 
 variable "tokens" {
-  description = "Number of tokens to generate."
+  description = "Number of tokens to generate"
 
   default = 1
 }

@@ -22,15 +22,16 @@ module "trail" {
   depends_on = ["${module.bucket.name}"]
 }
 
-module "lambda" {
-  source = "modules/lambda"
+module "handler" {
+  source = "modules/handler"
 
-  name                   = "${var.lambda_name}"
-  role_name              = "${var.lambda_role_name}"
-  log_group_arn          = "${module.trail.log_group_arn}"
+  name                   = "${var.handler_name}"
+  role_name              = "${var.handler_role_name}"
   bucket_name            = "${var.trail_bucket_name}"
   bucket_key_prefix      = "${var.trail_bucket_key_prefix}"
   honey_user_name        = "${var.user_name}"
+  ip_whitelist           = "${var.ip_whitelist}"
+  user_agent_whitelist   = "${var.user_agent_whitelist}"
   slack_notification_url = "${var.slack_notification_url}"
 
   depends_on = ["${module.bucket.name}", "${module.trail.name}"]
